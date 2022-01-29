@@ -11,7 +11,7 @@ using namespace std;
 #define rand_seed 114
 #define population 100 // population 100
 #define loop 5000      // generation 5000
-#define test 1
+#define test 50
 //#define delta 0.002
 #define m 10 // FIXME
 #define n 3  // FIXME
@@ -33,7 +33,7 @@ int output[16] = {7,5,4,2,0,1,6,3}; // int output[power(2,n)]
 
 // about parameter of KNQTS
 double delta = 0.002;
-int diff = INT32_MAX;
+int diff = INT_MAX;
 
 void init();
 void ans();        // generate ans  5   
@@ -310,7 +310,7 @@ void update()
     }
 
     //update delta
-    diff == INT32_MAX ? diff = nowdiff : diff = diff;
+    diff == INT_MAX ? diff = nowdiff : diff = diff;
 
     //compare to last generation
     if (nowdiff > diff) // 差異變大

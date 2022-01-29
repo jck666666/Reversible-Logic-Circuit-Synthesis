@@ -12,7 +12,7 @@ using namespace std;
 #define population 100 // population 100
 #define loop 5000      // generation 5000
 #define test 1
-#define delta 0.002
+//#define delta 0.002
 #define m 10 // FIXME
 #define n 3  // FIXME
 
@@ -30,6 +30,10 @@ int gb[n][m] = {0}, gw[n][m] = {0};
 
 // FIXME
 int output[16] = {7,5,4,2,0,1,6,3}; // int output[power(2,n)]
+
+// about parameter of KNQTS
+double delta = 0.002;
+int diff = INT32_MAX;
 
 void init();
 void ans();        // generate ans  5   
@@ -290,7 +294,36 @@ void update()
     }
     /* ↑ find local best(sb) and local worst(sw) ↑ */
 
-    /* update global value b and w */
+    /* ↓ update delta ↓ */
+
+    // hamming distance between sb and sw
+    int nowdiff = 0;
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < m; j++)
+        {
+            if (x[sb][i][j] != x[sw][i][j])
+            {
+                nowdiff++;
+            }
+        }
+    }
+
+    //update delta
+    diff == INT32_MAX ? diff = nowdiff : diff = diff;
+
+    //compare to last generation
+    if (nowdiff > diff) // 差異變大
+    {
+        delta *= 1.01;
+    }
+    else if (nowdiff < diff)
+    {
+        delta *= 0.99;
+    }
+    /* ↑ update delta ↑ */
+
+    /* ↓ update global value b and w ↓ */
     if (max >= b)
     {
         changeBest = true;
@@ -315,6 +348,8 @@ void update()
             }
         }
     }
+    /* ↑ update global value b and w ↑ */
+
 
     /* update Q matrix */
     for (int i = 0; i < n; i++)

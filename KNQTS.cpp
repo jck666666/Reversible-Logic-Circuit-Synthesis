@@ -13,8 +13,8 @@ using namespace std;
 #define loop 5000      // generation 5000
 #define test 50
 //#define delta 0.002
-#define m 10 // FIXME
-#define n 3  // FIXME
+#define m 16 // FIXME
+#define n 4  // FIXME
 
 bool changeBest = false;
 /* about Q matrix */
@@ -29,7 +29,7 @@ double b = 0.0, w = 100;
 int gb[n][m] = {0}, gw[n][m] = {0};
 
 // FIXME
-int output[16] = {7,5,4,2,0,1,6,3}; // int output[power(2,n)]
+int output[16] = {13,1,14,0,9,2,15,6,12,8,11,3,4,5,7,10}; // int output[power(2,n)]
 
 // about parameter of KNQTS
 double delta = 0.002;
@@ -356,6 +356,18 @@ void update()
     {
         for (int j = 0; j < m; j++)
         {
+            /* ↓ quantum NOT gate → the standard is 0.25 ↓ */
+            if (gb[i][j] != gw[i][j])
+            {
+                if (Q[i][j][gb[i][j]] < Q[i][j][gw[i][j]]) // NOT
+                {
+                    /* swap the Prob. of gb and gw */
+                    double tmp = Q[i][j][gw[i][j]];
+                    Q[i][j][gw[i][j]] = Q[i][j][gb[i][j]];
+                    Q[i][j][gb[i][j]] = tmp;
+                }
+            }
+            /* ↑ quantum NOT gate → the standard is 0.25 ↑ */
 
             if (gb[i][j] != gw[i][j]) // have to update
             {
@@ -379,19 +391,6 @@ void update()
                 }
             }
             /* ↑ repair ans ↑ */
-
-            /* ↓ quantum NOT gate → the standard is 0.25 ↓ */
-            if (gb[i][j] != gw[i][j])
-            {
-                if (Q[i][j][gb[i][j]] < 0.25) // NOT
-                {
-                    /* swap the Prob. of gb and gw */
-                    double tmp = Q[i][j][gw[i][j]];
-                    Q[i][j][gw[i][j]] = Q[i][j][gb[i][j]];
-                    Q[i][j][gb[i][j]] = tmp;
-                }
-            }
-            /* ↑ quantum NOT gate → the standard is 0.25 ↑ */
         }
     }
 }

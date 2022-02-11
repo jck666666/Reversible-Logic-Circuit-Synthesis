@@ -29,7 +29,7 @@ double b = 0.0, w = 100;
 int gb[n][m] = {0}, gw[n][m] = {0};
 
 // FIXME
-int output[16] = {13,1,14,0,9,2,15,6,12,8,11,3,4,5,7,10}; // int output[power(2,n)]
+int output[16] = {6, 4, 11, 0, 9, 8, 12, 2, 15, 5, 3, 7, 10, 13, 14, 1}; // int output[power(2,n)]
 
 // about parameter of KNQTS
 double delta = 0.002;
@@ -315,13 +315,15 @@ void update()
     //compare to last generation
     if (nowdiff > diff) // 差異變大
     {
-        delta *= 1.01;
+        delta = 0.002 + 0.001;
     }
     else if (nowdiff < diff)
     {
-        delta *= 0.99;
+        delta = 0.002 - 0.001;
     }
     /* ↑ update delta ↑ */
+
+    diff = nowdiff;
 
     /* ↓ update global value b and w ↓ */
     if (max >= b)
@@ -356,19 +358,6 @@ void update()
     {
         for (int j = 0; j < m; j++)
         {
-            /* ↓ quantum NOT gate → the standard is 0.25 ↓ */
-            if (gb[i][j] != gw[i][j])
-            {
-                if (Q[i][j][gb[i][j]] < Q[i][j][gw[i][j]]) // NOT
-                {
-                    /* swap the Prob. of gb and gw */
-                    double tmp = Q[i][j][gw[i][j]];
-                    Q[i][j][gw[i][j]] = Q[i][j][gb[i][j]];
-                    Q[i][j][gb[i][j]] = tmp;
-                }
-            }
-            /* ↑ quantum NOT gate → the standard is 0.25 ↑ */
-
             if (gb[i][j] != gw[i][j]) // have to update
             {
                 Q[i][j][gb[i][j]] += delta;
@@ -391,6 +380,19 @@ void update()
                 }
             }
             /* ↑ repair ans ↑ */
+
+            /* ↓ quantum NOT gate → the standard is 0.25 ↓ */
+            if (gb[i][j] != gw[i][j])
+            {
+                if (Q[i][j][gb[i][j]] < Q[i][j][gw[i][j]]) // NOT
+                {
+                    /* swap the Prob. of gb and gw */
+                    double tmp = Q[i][j][gw[i][j]];
+                    Q[i][j][gw[i][j]] = Q[i][j][gb[i][j]];
+                    Q[i][j][gb[i][j]] = tmp;
+                }
+            }
+            /* ↑ quantum NOT gate → the standard is 0.25 ↑ */
         }
     }
 }

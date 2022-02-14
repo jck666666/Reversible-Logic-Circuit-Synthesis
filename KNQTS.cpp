@@ -12,7 +12,8 @@ using namespace std;
 #define population 100 // population 100
 #define loop 5000      // generation 5000
 #define test 50
-//#define delta 0.002
+#define delta 0.002
+#define delta_change 0.001
 #define m 16 // FIXME
 #define n 4  // FIXME
 
@@ -32,8 +33,8 @@ int gb[n][m] = {0}, gw[n][m] = {0};
 int output[16] = {6, 4, 11, 0, 9, 8, 12, 2, 15, 5, 3, 7, 10, 13, 14, 1}; // int output[power(2,n)]
 
 // about parameter of KNQTS
-double delta = 0.002;
-int diff = INT_MAX;
+int last_ham = INT_MAX;
+double adaptive_delta = delta;
 
 void init();
 void ans();        // generate ans  5   
@@ -294,36 +295,42 @@ void update()
     }
     /* ↑ find local best(sb) and local worst(sw) ↑ */
 
-    /* ↓ update delta ↓ */
+    /* ↓ KNQTS ↓ */
 
     // hamming distance between sb and sw
-    int nowdiff = 0;
+    int ham = 0;
     for (int i = 0; i < n; i++)
     {
         for (int j = 0; j < m; j++)
         {
             if (x[sb][i][j] != x[sw][i][j])
             {
-                nowdiff++;
+                ham++;
             }
         }
     }
 
     //update delta
-    diff == INT_MAX ? diff = nowdiff : diff = diff;
+    last_ham == INT_MAX ? last_ham = ham : last_ham = last_ham;
 
     //compare to last generation
-    if (nowdiff > diff) // 差異變大
+    if (ham > last_ham) // 差異變大
     {
-        delta = 0.002 + 0.001;
+        adaptive_delta = delta + delta_change;
     }
-    else if (nowdiff < diff)
+    else if (ham < last_ham)
     {
-        delta = 0.002 - 0.001;
+        adaptive_delta = delta - delta_change;
+    }
+    else
+    {
+        adaptive_delta = delta;
     }
     /* ↑ update delta ↑ */
 
-    diff = nowdiff;
+    last_ham = ham;
+
+    /* ↑ KNQTS ↑ */
 
     /* ↓ update global value b and w ↓ */
     if (max >= b)
@@ -352,7 +359,6 @@ void update()
     }
     /* ↑ update global value b and w ↑ */
 
-
     /* update Q matrix */
     for (int i = 0; i < n; i++)
     {
@@ -360,8 +366,8 @@ void update()
         {
             if (gb[i][j] != gw[i][j]) // have to update
             {
-                Q[i][j][gb[i][j]] += delta;
-                Q[i][j][gw[i][j]] -= delta;
+                Q[i][j][gb[i][j]] += adaptive_delta;
+                Q[i][j][gw[i][j]] -= adaptive_delta;
             }
 
             /* ↓ repair ans ↓ */

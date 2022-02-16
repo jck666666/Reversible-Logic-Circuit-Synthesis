@@ -104,6 +104,18 @@ int main()
     cout << "care_gate = " << (double)careGate / (double)getans << endl;
     cout << "best ans = " << bestAns << endl;
 
+    // for (int i = 0; i < n; i++)
+    // {
+    //     for (int j = 0; j < m; j++)
+    //     {
+    //         for (int k = 0; k < 4; k++)
+    //         {
+    //             cout << Q[i][j][k] << "\t";
+    //         }
+    //         cout << endl;
+    //     }
+    // }
+
     return 0;
 }
 

@@ -91,7 +91,6 @@ int main()
 
         getfit += b;
         numGate += ngate;
-
         cout << "========== matrix ==========\n";
         for (int i = 0; i < n; i++)
         {
@@ -336,6 +335,19 @@ void update()
         for (int j = 0; j < m; j++)
         {
 
+            /* ↓ quantum NOT gate → the standard is 0.25 ↓ */
+            if (gb[i][j] != gw[i][j])
+            {
+                if (Q[i][j][gb[i][j]] < 0.25) // NOT
+                {
+                    /* swap the Prob. of gb and gw */
+                    double tmp = Q[i][j][gw[i][j]];
+                    Q[i][j][gw[i][j]] = Q[i][j][gb[i][j]];
+                    Q[i][j][gb[i][j]] = tmp;
+                }
+            }
+            /* ↑ quantum NOT gate → the standard is 0.25 ↑ */
+
             if (gb[i][j] != gw[i][j]) // have to update
             {
                 Q[i][j][gb[i][j]] += delta;
@@ -358,19 +370,6 @@ void update()
                 }
             }
             /* ↑ repair ans ↑ */
-
-            /* ↓ quantum NOT gate → the standard is 0.25 ↓ */
-            if (gb[i][j] != gw[i][j])
-            {
-                if (Q[i][j][gb[i][j]] < 0.25) // NOT
-                {
-                    /* swap the Prob. of gb and gw */
-                    double tmp = Q[i][j][gw[i][j]];
-                    Q[i][j][gw[i][j]] = Q[i][j][gb[i][j]];
-                    Q[i][j][gb[i][j]] = tmp;
-                }
-            }
-            /* ↑ quantum NOT gate → the standard is 0.25 ↑ */
         }
     }
 }

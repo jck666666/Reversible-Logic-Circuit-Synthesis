@@ -14,7 +14,7 @@ using namespace std;
 #define test 50
 #define delta 0.002
 #define delta_change 0.001
-#define m 16 // FIXME
+#define m 13 // FIXME
 #define n 4  // FIXME
 
 bool changeBest = false;

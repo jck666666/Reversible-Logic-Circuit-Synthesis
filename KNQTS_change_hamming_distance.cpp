@@ -14,7 +14,7 @@ using namespace std;
 #define test 50
 #define delta 0.002
 #define delta_change 0.001
-#define m 16 // FIXME
+#define m 13 // FIXME
 #define n 4  // FIXME
 
 bool changeBest = false;
@@ -37,7 +37,7 @@ int last_ham = INT_MAX;
 double adaptive_delta = delta;
 
 void init();
-void ans();        // generate ans  5   
+void ans();        // generate ans  5
 void repair();     // repair ans
 void fitness();    // A/B //FIXME //TODO
 void oldfitness(); // w1*fit1+w2*fit2 //FIXME //TODO
@@ -45,10 +45,11 @@ void update();
 
 int cntCOP(int indexOfx);
 int cntGate(int indexOfx);
-bool correct(int indexOfx, int in, int out);
-int *toBinary(int num);
-int toDecimal(int *num);
+bool correct(int indexOfx, int in, int out); // find the input is correct or not
+int *toBinary(int num);                      // change number from 2 -> 10
+int toDecimal(int *num);                     // change number from 10 -> 2
 int gate();
+int cntHam(int sb, int sw); // count hamming distance
 
 int main()
 {
@@ -292,14 +293,14 @@ void update()
     for (int i = 0; i < population; i++)
     {
         /* find best */
-        if (fit[i] >= max)
+        if (fit[i] > max)
         {
             max = fit[i];
             sb = i;
         }
 
         /* find worst */
-        if (fit[i] <= min)
+        if (fit[i] < min)
         {
             min = fit[i];
             sw = i;
@@ -310,29 +311,20 @@ void update()
     /* ↓ KNQTS ↓ */
 
     // hamming distance between sb and sw
-    int ham = 0;
-    for (int i = 0; i < n; i++)
-    {
-        for (int j = 0; j < m; j++)
-        {
-            if (x[sb][i][j] != x[sw][i][j])
-            {
-                ham++;
-            }
-        }
-    }
 
-    //update delta
+    int ham = cntHam(sb, sw);
+
+    // update delta
     last_ham == INT_MAX ? last_ham = ham : last_ham = last_ham;
 
-    //compare to last generation
+    // compare to last generation
     if (ham > last_ham) // 差異變大
     {
-        adaptive_delta = delta + delta_change;
+        adaptive_delta *= 1.0001;
     }
     else if (ham < last_ham)
     {
-        adaptive_delta = delta - delta_change;
+        adaptive_delta *= 0.9999;
     }
     else
     {
@@ -376,16 +368,16 @@ void update()
     {
         for (int j = 0; j < m; j++)
         {
-            if (gb[i][j] != gw[i][j]) // have to update
+            if (gb[i][j] != x[sw][i][j]) // have to update
             {
                 Q[i][j][gb[i][j]] += adaptive_delta;
                 Q[i][j][gw[i][j]] -= adaptive_delta;
             }
 
             /* ↓ repair ans ↓ */
-            if (Q[i][j][gw[i][j]] <= 0)
+            if (Q[i][j][x[sw][i][j]] <= 0)
             {
-                Q[i][j][gw[i][j]] = 0;
+                Q[i][j][x[sw][i][j]] = 0;
 
                 /* Q[i][j][gb[i][j]] = 1 - remain */
                 Q[i][j][gb[i][j]] = 1;
@@ -400,13 +392,13 @@ void update()
             /* ↑ repair ans ↑ */
 
             /* ↓ quantum NOT gate → the standard is 0.25 ↓ */
-            if (gb[i][j] != gw[i][j])
+            if (gb[i][j] !=x[sw][i][j])
             {
-                if (Q[i][j][gb[i][j]] < Q[i][j][gw[i][j]]) // NOT
+                if (Q[i][j][gb[i][j]] < Q[i][j][x[sw][i][j]]) // NOT
                 {
                     /* swap the Prob. of gb and gw */
-                    double tmp = Q[i][j][gw[i][j]];
-                    Q[i][j][gw[i][j]] = Q[i][j][gb[i][j]];
+                    double tmp = Q[i][j][x[sw][i][j]];
+                    Q[i][j][x[sw][i][j]] = Q[i][j][gb[i][j]];
                     Q[i][j][gb[i][j]] = tmp;
                 }
             }
@@ -529,4 +521,48 @@ int toDecimal(int *num)
     }
 
     return decimal;
+}
+
+int cntHam(int sb, int sw)
+{
+    int lsb = 0, msb = 0;
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < m; j++)
+        {
+            /* cnt lsb */
+            if (x[sb][i][j] == 0 || x[sb][i][j] == 2)
+            {
+                if (x[sw][i][j] == 1 || x[sw][i][j] == 3)
+                {
+                    lsb++;
+                }
+            }
+            else // sb == 1 || sb == 3
+            {
+                if (x[sw][i][j] == 0 || x[sw][i][j] == 2)
+                {
+                    lsb++;
+                }
+            }
+
+            /* cnt msb */
+            if (x[sb][i][j] == 0 || x[sb][i][j] == 1)
+            {
+                if (x[sw][i][j] == 2 || x[sw][i][j] == 3)
+                {
+                    msb++;
+                }
+            }
+            else // sb == 2 || sb == 3
+            {
+                if (x[sw][i][j] == 0 || x[sw][i][j] == 1)
+                {
+                    msb++;
+                }
+            }
+        }
+    }
+
+    return (floor(log2((double)(pow(2, n) / lsb)) + 1) + floor(log2((double)(pow(2, n) / msb)) + 1));
 }

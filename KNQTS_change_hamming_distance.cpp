@@ -11,10 +11,10 @@ using namespace std;
 #define rand_seed 114
 #define population 100 // population 100
 #define loop 5000      // generation 5000
-#define test 1
+#define test 50
 #define delta 0.002
 #define delta_change 0.001
-#define m 15 // FIXME
+#define m 16 // FIXME
 #define n 4  // FIXME
 
 bool changeBest = false;
@@ -30,7 +30,7 @@ double b = 0.0, w = 100;
 int gb[n][m] = {0}, gw[n][m] = {0};
 
 // FIXME
-int output[16] = {6, 3, 14, 13, 2, 11, 7, 10, 0, 5, 8, 1, 12, 15, 9, 4}; // int output[power(2,n)]
+int output[16] = {6, 4, 11, 0, 9, 8, 12, 2, 15, 5, 3, 7, 10, 13, 14, 1}; // int output[power(2,n)]
 
 // about parameter of KNQTS
 int last_ham = INT_MAX;
@@ -317,25 +317,25 @@ void update()
 
     // update delta
     last_ham == INT_MAX ? last_ham = ham : last_ham = last_ham;
-    cout << "====== best and worst ======\n";
-    for (int i = 0; i < n; i++)
-    {
-        for (int j = 0; j < m; j++)
-        {
-            cout << x[sb][i][j];
-        }
-    }
-    cout << endl;
-    for (int i = 0; i < n; i++)
-    {
-        for (int j = 0; j < m; j++)
-        {
-            cout << x[sw][i][j];
-        }
-    }
-    cout << endl;
-    cout << "ham = " << ham << endl
-         << endl;
+    // cout << "====== best and worst ======\n";
+    // for (int i = 0; i < n; i++)
+    // {
+    //     for (int j = 0; j < m; j++)
+    //     {
+    //         cout << x[sb][i][j];
+    //     }
+    // }
+    // cout << endl;
+    // for (int i = 0; i < n; i++)
+    // {
+    //     for (int j = 0; j < m; j++)
+    //     {
+    //         cout << x[sw][i][j];
+    //     }
+    // }
+    // cout << endl;
+    // cout << "ham = " << ham << endl
+    //      << endl;
 
     // compare to last generation
     if (ham > last_ham) // 差異變大

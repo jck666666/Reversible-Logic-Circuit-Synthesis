@@ -14,8 +14,8 @@ using namespace std;
 #define test 50
 #define delta 0.002
 #define delta_change 0.001
-#define m 10 // FIXME
-#define n 3  // FIXME
+#define m 13 // FIXME
+#define n 4  // FIXME
 
 bool changeBest = false;
 /* about Q matrix */
@@ -30,7 +30,7 @@ double b = 0.0, w = 100;
 int gb[n][m] = {0}, gw[n][m] = {0};
 
 // FIXME
-int output[8] = {1,0,3,2,5,7,4,6}; // int output[power(2,n)]
+int output[16] = {6,4,11,0,9,8,12,2,15,5,3,7,10,13,14,1}; // int output[power(2,n)]
 
 // about parameter of KNQTS
 int last_ham = INT_MAX;
@@ -67,6 +67,8 @@ int main()
     for (int time = 0; time < test; time++)
     {
         b = 0.0, w = 100, generation = 0;
+		last_ham = INT_MAX;
+		adaptive_delta = delta;
         init();
         for (int i = 0; i < loop; i++)
         {
@@ -293,14 +295,14 @@ void update()
     for (int i = 0; i < population; i++)
     {
         /* find best */
-        if (fit[i] > max)
+        if (fit[i] >= max)
         {
             max = fit[i];
             sb = i;
         }
 
         /* find worst */
-        if (fit[i] < min)
+        if (fit[i] <= min)
         {
             min = fit[i];
             sw = i;
@@ -320,11 +322,11 @@ void update()
     // compare to last generation
     if (ham > last_ham) // 差異變大
     {
-        adaptive_delta *= 1.0001;
+        adaptive_delta *= 1.001;
     }
     else if (ham < last_ham)
     {
-        adaptive_delta *= 0.9999;
+        adaptive_delta *= 0.999;
     }
     else
     {
@@ -371,7 +373,7 @@ void update()
             if (gb[i][j] != x[sw][i][j]) // have to update
             {
                 Q[i][j][gb[i][j]] += adaptive_delta;
-                Q[i][j][gw[i][j]] -= adaptive_delta;
+                Q[i][j][x[sw][i][j]] -= adaptive_delta;
             }
 
             /* ↓ repair ans ↓ */
@@ -392,7 +394,7 @@ void update()
             /* ↑ repair ans ↑ */
 
             /* ↓ quantum NOT gate → the standard is 0.25 ↓ */
-            if (gb[i][j] !=x[sw][i][j])
+            if (gb[i][j] != x[sw][i][j])
             {
                 if (Q[i][j][gb[i][j]] < Q[i][j][x[sw][i][j]]) // NOT
                 {

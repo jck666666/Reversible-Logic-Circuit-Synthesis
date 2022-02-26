@@ -37,7 +37,7 @@ int last_ham = INT_MAX;
 double adaptive_delta = delta;
 
 void init();
-void ans();        // generate ans  5   
+void ans();        // generate ans  5
 void repair();     // repair ans
 void fitness();    // A/B //FIXME //TODO
 void oldfitness(); // w1*fit1+w2*fit2 //FIXME //TODO
@@ -65,6 +65,8 @@ int main()
     int bestAns = 2000000; // Find the best ans in the 50Exp
     for (int time = 0; time < test; time++)
     {
+        last_ham = INT_MAX;
+        adaptive_delta = delta;
         b = 0.0, w = 100, generation = 0;
         init();
         for (int i = 0; i < loop; i++)
@@ -322,17 +324,17 @@ void update()
         }
     }
 
-    //update delta
+    // update delta
     last_ham == INT_MAX ? last_ham = ham : last_ham = last_ham;
 
-    //compare to last generation
+    // compare to last generation
     if (ham > last_ham) // 差異變大
     {
-        adaptive_delta = delta + delta_change;
+        adaptive_delta *= 1.001;
     }
     else if (ham < last_ham)
     {
-        adaptive_delta = delta - delta_change;
+        adaptive_delta *= 0.999;
     }
     else
     {

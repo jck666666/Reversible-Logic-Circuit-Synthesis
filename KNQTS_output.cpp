@@ -14,7 +14,7 @@ using namespace std;
 #define test 50
 #define delta 0.002
 #define delta_change 0.001
-#define m 12 // FIXME
+#define m 13 // FIXME
 #define n 4  // FIXME
 
 bool changeBest = false;
@@ -30,7 +30,7 @@ double b = 0.0, w = 100;
 int gb[n][m] = {0}, gw[n][m] = {0};
 
 // FIXME
-int output[16] = {6,3,14,13,2,11,7,10,0,5,8,1,12,15,9,4}; // int output[power(2,n)]
+int output[16] = {6, 4, 11, 0, 9, 8, 12, 2, 15, 5, 3, 7, 10, 13, 14, 1}; // int output[power(2,n)]
 
 // about parameter of KNQTS
 int last_ham = INT_MAX;
@@ -45,11 +45,10 @@ void update();
 
 int cntCOP(int indexOfx);
 int cntGate(int indexOfx);
-bool correct(int indexOfx, int in, int out); // find the input is correct or not
-int *toBinary(int num);                      // change number from 2 -> 10
-int toDecimal(int *num);                     // change number from 10 -> 2
+bool correct(int indexOfx, int in, int out);
+int *toBinary(int num);
+int toDecimal(int *num);
 int gate();
-int cntHam(int sb, int sw); // count hamming distance
 
 int main()
 {
@@ -66,9 +65,9 @@ int main()
     int bestAns = 2000000; // Find the best ans in the 50Exp
     for (int time = 0; time < test; time++)
     {
+        last_ham = INT_MAX;
+        adaptive_delta = delta;
         b = 0.0, w = 100, generation = 0;
-		last_ham = INT_MAX;
-		adaptive_delta = delta;
         init();
         for (int i = 0; i < loop; i++)
         {
@@ -313,8 +312,17 @@ void update()
     /* ↓ KNQTS ↓ */
 
     // hamming distance between sb and sw
-
-    int ham = cntHam(sb, sw);
+    int ham = 0;
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < m; j++)
+        {
+            if (x[sb][i][j] != x[sw][i][j])
+            {
+                ham++;
+            }
+        }
+    }
 
     // update delta
     last_ham == INT_MAX ? last_ham = ham : last_ham = last_ham;
@@ -322,11 +330,11 @@ void update()
     // compare to last generation
     if (ham > last_ham) // 差異變大
     {
-        adaptive_delta *= 1.001;
+        adaptive_delta *= 1.0001;
     }
     else if (ham < last_ham)
     {
-        adaptive_delta *= 0.999;
+        adaptive_delta *= 0.9999;
     }
     else
     {
@@ -523,48 +531,4 @@ int toDecimal(int *num)
     }
 
     return decimal;
-}
-
-int cntHam(int sb, int sw)
-{
-    int lsb = 0, msb = 0;
-    for (int i = 0; i < n; i++)
-    {
-        for (int j = 0; j < m; j++)
-        {
-            /* cnt lsb */
-            if (x[sb][i][j] == 0 || x[sb][i][j] == 2)
-            {
-                if (x[sw][i][j] == 1 || x[sw][i][j] == 3)
-                {
-                    lsb++;
-                }
-            }
-            else // sb == 1 || sb == 3
-            {
-                if (x[sw][i][j] == 0 || x[sw][i][j] == 2)
-                {
-                    lsb++;
-                }
-            }
-
-            /* cnt msb */
-            if (x[sb][i][j] == 0 || x[sb][i][j] == 1)
-            {
-                if (x[sw][i][j] == 2 || x[sw][i][j] == 3)
-                {
-                    msb++;
-                }
-            }
-            else // sb == 2 || sb == 3
-            {
-                if (x[sw][i][j] == 0 || x[sw][i][j] == 1)
-                {
-                    msb++;
-                }
-            }
-        }
-    }
-
-    return (floor(log2((double)(pow(2, n) / lsb)) + 1) + floor(log2((double)(pow(2, n) / msb)) + 1));
 }

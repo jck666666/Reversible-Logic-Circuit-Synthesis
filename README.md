@@ -1,6 +1,6 @@
 # Reversible-Logic-Circuit-Synthesis
 
-* KNQTS ➡️ 初版，hamming distance 和delta忘記歸0了
+* KNQTS ➡️ 初版
 
 * KNQTS change hamming distance ➡️ lsb+msb那版
 

@@ -2,7 +2,7 @@
 
 * KNQTS ➡️ 初版，hamming distance 和delta忘記歸0了
 
-* KNQTS change hamming distance ➡️ 和KNQTS有一樣的錯也還沒修正
+* KNQTS change hamming distance ➡️ lsb+msb那版
 
 * KNQTS_lw_ver ➡️ 目前版本
 

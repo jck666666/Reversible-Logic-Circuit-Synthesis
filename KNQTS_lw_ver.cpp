@@ -14,7 +14,7 @@ using namespace std;
 #define test 50
 #define delta 0.002
 #define delta_change 0.001
-#define m 16 // FIXME
+#define m 13 // FIXME
 #define n 4  // FIXME
 
 bool changeBest = false;
@@ -313,7 +313,17 @@ void update()
 
     // hamming distance between sb and sw
 
-    int ham = cntHam(sb, sw);
+    int ham = 0;
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < m; j++)
+        {
+            if (x[sb][i][j] != x[sw][i][j])
+            {
+                ham++;
+            }
+        }
+    }
 
     // update delta
     last_ham == INT_MAX ? last_ham = ham : last_ham = last_ham;
@@ -329,7 +339,7 @@ void update()
     }
     else
     {
-        adaptive_delta = delta;
+        adaptive_delta = adaptive_delta;
     }
     /* ↑ update delta ↑ */
 

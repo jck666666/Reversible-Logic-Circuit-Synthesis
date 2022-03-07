@@ -1,5 +1,9 @@
 # Reversible-Logic-Circuit-Synthesis
 
+* KNQTS_data_ver_小於unmm
+  * 還沒有確定mm有沒有不小心寫錯
+  * 還沒測
+
 * KNQTS_data_ver_小於unbm
   * 還沒有確定bm有沒有不小心寫錯
 

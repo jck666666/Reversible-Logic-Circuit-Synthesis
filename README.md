@@ -1,7 +1,8 @@
 # Reversible-Logic-Circuit-Synthesis
 
 * KNQTS_data_ver ➡️ 按下去就跑所有數據版
-  * 目前還未全部跑完，感覺是正確的?不過m那裡可能有印錯東西(但不影響)
+  * 目前還未全部跑完，感覺是正確的?
+  * m那裡，有找到答案的平均gate數和m值中間忘記"\t"了
 
 * KNQTS ➡️ 初版
 

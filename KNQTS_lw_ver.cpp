@@ -418,6 +418,8 @@ void update()
     }
 }
 
+ijijijijii
+
 int cntCOP(int indexOfx)
 {
     int cnt = 0;

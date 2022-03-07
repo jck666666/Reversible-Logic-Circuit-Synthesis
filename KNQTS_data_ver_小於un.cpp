@@ -6,6 +6,7 @@
 
 /* 0 → 0-control, 1 → 1-control, 2 → copy bit, 3 → not */
 
+//time cost: 35 min.
 using namespace std;
 
 #define rand_seed 114
@@ -132,7 +133,7 @@ int main()
         }
 
         cout << getans << "\t" << getfit / (double)test << "\t" << (double)numGate / (double)test
-             << "\t" << (double)careGate / (double)getans << m << "\t"
+             << "\t" << (double)careGate / (double)getans << "\t" << m << "\t"
              << bestAns << endl;
     }
 

@@ -1,5 +1,8 @@
 # Reversible-Logic-Circuit-Synthesis
 
+* KNQTS_data_ver ➡️ 按下去就跑所有數據版
+  * 目前還未全部跑完，感覺是正確的?不過m那裡可能有印錯東西(但不影響)
+
 * KNQTS ➡️ 初版
 
 * KNQTS change hamming distance ➡️ lsb+msb那版

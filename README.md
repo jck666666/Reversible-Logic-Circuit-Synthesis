@@ -1,6 +1,9 @@
 # Reversible-Logic-Circuit-Synthesis
 
-* KNQTS_data_ver ➡️ 按下去就跑所有數據版
+* KNQTS_data_ver_小於unbm
+  * 還沒有確定bm有沒有不小心寫錯
+
+* KNQTS_data_ver_小於un ➡️ 按下去就跑所有數據版
   * 目前還未全部跑完，感覺是正確的?
   * m那裡，有找到答案的平均gate數和m值中間忘記"\t"了
 

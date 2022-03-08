@@ -6,7 +6,7 @@
 
 /* 0 → 0-control, 1 → 1-control, 2 → copy bit, 3 → not */
 
-//time cost: 35 min.
+//time cost: 38 min.
 using namespace std;
 
 #define rand_seed 114

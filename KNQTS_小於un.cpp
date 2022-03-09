@@ -59,6 +59,10 @@ int function[mMAX][mMAX] = {
     {9, 7, 13, 10, 4, 2, 14, 3, 0, 12, 6, 8, 15, 11, 1, 5},
     {7, 5, 2, 4, 6, 1, 0, 3}};
 
+// about parameter of KNQTS
+int last_ham = INT_MAX;
+double adaptive_delta = delta;
+
 void init();
 void ans();        // generate ans  5
 void repair();     // repair ans
@@ -95,6 +99,7 @@ int main()
         for (int time = 0; time < test; time++)
         {
             b = 0.0, w = 100, generation = 0;
+            last_ham = INT_MAX, adaptive_delta = delta;
             init();
             for (int i = 0; i < loop; i++)
             {
@@ -323,6 +328,44 @@ void update()
     }
     /* ↑ find local best(sb) and local worst(sw) ↑ */
 
+    /* ↓ KNQTS ↓ */
+
+    // hamming distance between sb and sw
+
+    int ham = 0;
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < m; j++)
+        {
+            if (x[sb][i][j] != x[sw][i][j])
+            {
+                ham++;
+            }
+        }
+    }
+
+    // update delta
+    last_ham == INT_MAX ? last_ham = ham : last_ham = last_ham;
+
+    // compare to last generation
+    if (ham > last_ham) // 差異變大
+    {
+        adaptive_delta *= 1.001;
+    }
+    else if (ham < last_ham)
+    {
+        adaptive_delta *= 0.999;
+    }
+    else
+    {
+        adaptive_delta = adaptive_delta;
+    }
+    /* ↑ update delta ↑ */
+
+    last_ham = ham;
+
+    /* ↑ KNQTS ↑ */
+
     /* ↓ update global value b and w ↓ */
     if (max >= b)
     {
@@ -357,8 +400,8 @@ void update()
         {
             if (gb[i][j] != x[sw][i][j]) // have to update
             {
-                Q[i][j][gb[i][j]] += delta;
-                Q[i][j][x[sw][i][j]] -= delta;
+                Q[i][j][gb[i][j]] += adaptive_delta;
+                Q[i][j][x[sw][i][j]] -= adaptive_delta;
             }
 
             /* ↓ repair ans ↓ */
@@ -378,37 +421,15 @@ void update()
             }
             /* ↑ repair ans ↑ */
 
-            /* ↓ quantum NOT gate → the standard is gb < lw ↓ */
+            /* ↓ quantum NOT gate → the standard is 0.25 ↓ */
             if (gb[i][j] != x[sw][i][j])
             {
                 if (Q[i][j][gb[i][j]] < Q[i][j][x[sw][i][j]]) // NOT
                 {
-                    /* find max */
-                    int maxIndex = 0, max = Q[i][j][0], minIndex = 0, min = Q[i][j][0];
-                    for (int k = 1; k < 4; k++)
-                    {
-                        if (Q[i][j][k] > max)
-                        {
-                            max = Q[i][j][k];
-                            maxIndex = k;
-                        }
-                        else if (Q[i][j][k] < min)
-                        {
-                            min = Q[i][j][k];
-                            minIndex = k;
-                        }
-
-                    }
-
-                    /* swap the Prob. of gb and max */
-                    double tmp = Q[i][j][maxIndex];
-                    Q[i][j][maxIndex] = Q[i][j][gb[i][j]];
+                    /* swap the Prob. of gb and gw */
+                    double tmp = Q[i][j][x[sw][i][j]];
+                    Q[i][j][x[sw][i][j]] = Q[i][j][gb[i][j]];
                     Q[i][j][gb[i][j]] = tmp;
-
-                    /* swap the Prob. of lw and min */
-                    tmp = Q[i][j][minIndex];
-                    Q[i][j][minIndex] = Q[i][j][x[sw][i][j]];
-                    Q[i][j][x[sw][i][j]] = tmp;                   
                 }
             }
             /* ↑ quantum NOT gate → the standard is 0.25 ↑ */

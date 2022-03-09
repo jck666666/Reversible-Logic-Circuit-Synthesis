@@ -6,7 +6,7 @@
 
 /* 0 → 0-control, 1 → 1-control, 2 → copy bit, 3 → not */
 
-//time cost: 38 min.
+//time cost: 34 min.
 using namespace std;
 
 #define rand_seed 114
@@ -384,7 +384,8 @@ void update()
                 if (Q[i][j][gb[i][j]] < Q[i][j][x[sw][i][j]]) // NOT
                 {
                     /* find max */
-                    int maxIndex = 0, max = Q[i][j][0];
+                    int maxIndex = 0, minIndex = 0;
+                    double max = Q[i][j][0], min = Q[i][j][0];
                     for (int k = 1; k < 4; k++)
                     {
                         if (Q[i][j][k] > max)
@@ -392,12 +393,23 @@ void update()
                             max = Q[i][j][k];
                             maxIndex = k;
                         }
+                        else if (Q[i][j][k] < min)
+                        {
+                            min = Q[i][j][k];
+                            minIndex = k;
+                        }
+
                     }
 
                     /* swap the Prob. of gb and max */
                     double tmp = Q[i][j][maxIndex];
                     Q[i][j][maxIndex] = Q[i][j][gb[i][j]];
                     Q[i][j][gb[i][j]] = tmp;
+
+                    /* swap the Prob. of lw and min */
+                    tmp = Q[i][j][minIndex];
+                    Q[i][j][minIndex] = Q[i][j][x[sw][i][j]];
+                    Q[i][j][x[sw][i][j]] = tmp;                   
                 }
             }
             /* ↑ quantum NOT gate → the standard is 0.25 ↑ */

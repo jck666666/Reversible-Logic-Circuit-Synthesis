@@ -49,7 +49,9 @@ bool correct(int indexOfx, int in, int out); // find the input is correct or not
 int *toBinary(int num);                      // change number from 2 -> 10
 int toDecimal(int *num);                     // change number from 10 -> 2
 int gate();
-int cntHam(int sb, int sw); // count hamming distance
+
+int final_gb[n][m] = {0};
+int bestAns = INT_MAX;
 
 int main()
 {
@@ -98,6 +100,31 @@ int main()
 
         getfit += b;
         numGate += ngate;
+
+        for (int i = 0; i < m; i++)
+        {
+            for (int j = 0; j < n; j++)
+            {
+                if (gb[j][i] == 2)
+                    cout << 3;
+                else if (gb[j][i] == 3)
+                    cout << 2;
+                else
+                    cout << gb[j][i];
+            }
+            cout << endl;
+        }
+        if (b >= 1 && ngate < bestAns)
+        {
+            ngate = bestAns;
+            for (int a = 0; a < m; a++)
+            {
+                for (int b = 0; b < n; b++)
+                {
+                    final_gb[b][a] = gb[b][a];
+                }
+            }
+        }
     }
 
     cout << "get ans = " << getans << endl;
@@ -118,6 +145,19 @@ int main()
     //     }
     // }
 
+    for (int i = 0; i < m; i++)
+    {
+        for (int j = 0; j < n; j++)
+        {
+            if (final_gb[j][i] == 2)
+                cout << 3;
+            else if (final_gb[j][i] == 3)
+                cout << 2;
+            else
+                cout << final_gb[j][i];
+        }
+        cout << endl;
+    }
     return 0;
 }
 
@@ -403,7 +443,7 @@ void update()
             /* ↑ repair ans ↑ */
 
             /* ↓ quantum NOT gate → the standard is 0.25 ↓ */
-            if (gb[i][j] !=x[sw][i][j])
+            if (gb[i][j] != x[sw][i][j])
             {
                 if (Q[i][j][gb[i][j]] < Q[i][j][x[sw][i][j]]) // NOT
                 {
@@ -532,48 +572,4 @@ int toDecimal(int *num)
     }
 
     return decimal;
-}
-
-int cntHam(int sb, int sw)
-{
-    int lsb = 0, msb = 0;
-    for (int i = 0; i < n; i++)
-    {
-        for (int j = 0; j < m; j++)
-        {
-            /* cnt lsb */
-            if (x[sb][i][j] == 0 || x[sb][i][j] == 2)
-            {
-                if (x[sw][i][j] == 1 || x[sw][i][j] == 3)
-                {
-                    lsb++;
-                }
-            }
-            else // sb == 1 || sb == 3
-            {
-                if (x[sw][i][j] == 0 || x[sw][i][j] == 2)
-                {
-                    lsb++;
-                }
-            }
-
-            /* cnt msb */
-            if (x[sb][i][j] == 0 || x[sb][i][j] == 1)
-            {
-                if (x[sw][i][j] == 2 || x[sw][i][j] == 3)
-                {
-                    msb++;
-                }
-            }
-            else // sb == 2 || sb == 3
-            {
-                if (x[sw][i][j] == 0 || x[sw][i][j] == 1)
-                {
-                    msb++;
-                }
-            }
-        }
-    }
-
-    return (floor(log2((double)(pow(2, n) / lsb)) + 1) + floor(log2((double)(pow(2, n) / msb)) + 1));
 }

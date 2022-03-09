@@ -427,7 +427,8 @@ void update()
                 if (Q[i][j][gb[i][j]] < Q[i][j][x[sw][i][j]]) // NOT
                 {
                     /* find max */
-                    int maxIndex = 0, max = Q[i][j][0], minIndex = 0, min = Q[i][j][0];
+                    int maxIndex = 0, minIndex = 0;
+                    double max = Q[i][j][0], min = Q[i][j][0];
                     for (int k = 1; k < 4; k++)
                     {
                         if (Q[i][j][k] > max)

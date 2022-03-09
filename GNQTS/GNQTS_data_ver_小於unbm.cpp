@@ -6,7 +6,7 @@
 
 /* 0 → 0-control, 1 → 1-control, 2 → copy bit, 3 → not */
 
-//time cost: 37 min.
+//time cost: 38 min.
 using namespace std;
 
 #define rand_seed 114
@@ -384,7 +384,8 @@ void update()
                 if (Q[i][j][gb[i][j]] < Q[i][j][x[sw][i][j]]) // NOT
                 {
                     /* find max */
-                    int maxIndex = 0, max = Q[i][j][0];
+                    int maxIndex = 0;
+                    double max = Q[i][j][0];
                     for (int k = 1; k < 4; k++)
                     {
                         if (Q[i][j][k] > max)

@@ -57,5 +57,14 @@
         "typeindex": "cpp",
         "typeinfo": "cpp",
         "valarray": "cpp"
+    },
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/CVS": true,
+        "**/.DS_Store": true,
+        "**/Thumbs.db": true,
+        "**/*.exe":true
     }
 }

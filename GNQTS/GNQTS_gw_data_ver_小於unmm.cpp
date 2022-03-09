@@ -355,16 +355,16 @@ void update()
     {
         for (int j = 0; j < m; j++)
         {
-            if (gb[i][j] != x[sw][i][j]) // have to update
+            if (gb[i][j] != gw[i][j]) // have to update
             {
                 Q[i][j][gb[i][j]] += delta;
-                Q[i][j][x[sw][i][j]] -= delta;
+                Q[i][j][gw[i][j]] -= delta;
             }
 
             /* ↓ repair ans ↓ */
-            if (Q[i][j][x[sw][i][j]] <= 0)
+            if (Q[i][j][gw[i][j]] <= 0)
             {
-                Q[i][j][x[sw][i][j]] = 0;
+                Q[i][j][gw[i][j]] = 0;
 
                 /* Q[i][j][gb[i][j]] = 1 - remain */
                 Q[i][j][gb[i][j]] = 1;
@@ -379,9 +379,9 @@ void update()
             /* ↑ repair ans ↑ */
 
             /* ↓ quantum NOT gate → the standard is gb < lw ↓ */
-            if (gb[i][j] != x[sw][i][j])
+            if (gb[i][j] != gw[i][j])
             {
-                if (Q[i][j][gb[i][j]] < Q[i][j][x[sw][i][j]]) // NOT
+                if (Q[i][j][gb[i][j]] < Q[i][j][gw[i][j]]) // NOT
                 {
                     /* find max */
                     int maxIndex = 0, minIndex = 0;
@@ -408,8 +408,8 @@ void update()
 
                     /* swap the Prob. of lw and min */
                     tmp = Q[i][j][minIndex];
-                    Q[i][j][minIndex] = Q[i][j][x[sw][i][j]];
-                    Q[i][j][x[sw][i][j]] = tmp;                   
+                    Q[i][j][minIndex] = Q[i][j][gw[i][j]];
+                    Q[i][j][gw[i][j]] = tmp;                   
                 }
             }
             /* ↑ quantum NOT gate → the standard is 0.25 ↑ */

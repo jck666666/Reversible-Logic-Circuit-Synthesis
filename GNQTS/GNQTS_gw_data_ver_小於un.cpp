@@ -6,7 +6,7 @@
 
 /* 0 → 0-control, 1 → 1-control, 2 → copy bit, 3 → not */
 
-//time cost: 34 min.
+// time cost: 34 min.
 using namespace std;
 
 #define rand_seed 114
@@ -79,7 +79,7 @@ int gate();
 
 int main()
 {
-    for (int i = 0; i < FunctionNum; i++)
+    for (int i = 18; i < FunctionNum; i++)
     {
         srand(rand_seed);
         int total = 0;
@@ -135,7 +135,7 @@ int main()
              << "\t" << (double)careGate / (double)getans << "\t" << m << "\t"
              << bestAns << endl;
     }
-
+    system("pause");
     return 0;
 }
 

@@ -6,7 +6,7 @@
 
 /* 0 → 0-control, 1 → 1-control, 2 → copy bit, 3 → not */
 
-//time cost: 35 min.
+// time cost: 35 min.
 using namespace std;
 
 #define rand_seed 114
@@ -79,7 +79,7 @@ int gate();
 
 int main()
 {
-    for (int i = 0; i < FunctionNum; i++)
+    for (int i = 18; i < FunctionNum; i++)
     {
         srand(rand_seed);
         int total = 0;
@@ -136,6 +136,7 @@ int main()
              << bestAns << endl;
     }
 
+    system("pause");
     return 0;
 }
 
@@ -402,7 +403,6 @@ void update()
                             min = Q[i][j][k];
                             minIndex = k;
                         }
-
                     }
 
                     /* swap the Prob. of gb and max */
@@ -413,7 +413,7 @@ void update()
                     /* swap the Prob. of lw and min */
                     tmp = Q[i][j][minIndex];
                     Q[i][j][minIndex] = Q[i][j][x[sw][i][j]];
-                    Q[i][j][x[sw][i][j]] = tmp;                   
+                    Q[i][j][x[sw][i][j]] = tmp;
                 }
             }
             /* ↑ quantum NOT gate → the standard is 0.25 ↑ */

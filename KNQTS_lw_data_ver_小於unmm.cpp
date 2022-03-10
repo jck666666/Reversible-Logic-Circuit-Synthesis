@@ -82,7 +82,7 @@ int gate();
 
 int main()
 {
-    for (int i = 18; i < FunctionNum; i++)
+    for (int i = 0; i < FunctionNum; i++)
     {
         srand(rand_seed);
         int total = 0;

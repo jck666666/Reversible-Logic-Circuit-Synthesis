@@ -70,7 +70,6 @@ void init();
 void ans();        // generate ans  5
 void repair();     // repair ans
 void fitness();    // A/B //FIXME //TODO
-void oldfitness(); // w1*fit1+w2*fit2 //FIXME //TODO
 void update();
 
 int cntCOP(int indexOfx);
@@ -111,7 +110,7 @@ int main()
                     changeBest = false;
                     ans();
                     repair();
-                    oldfitness();
+                    fitness();
                     update();
                     if (changeBest)
                     {

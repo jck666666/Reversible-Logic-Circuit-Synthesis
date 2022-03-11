@@ -70,7 +70,6 @@ void init();
 void ans();        // generate ans  5
 void repair();     // repair ans
 void fitness();    // A/B //FIXME //TODO
-void oldfitness(); // w1*fit1+w2*fit2 //FIXME //TODO
 void update();
 
 int cntCOP(int indexOfx);
@@ -82,64 +81,68 @@ int gate();
 
 int main()
 {
-    for (int i = 18; i < FunctionNum; i++)
+    for (int i = 12; i < FunctionNum; i++)
     {
-        srand(rand_seed);
-        int total = 0;
-        int generation = 0;
-
+        cout << "======== function" << i << " =========\n";
         m = Form[i];
         n = Forn[i];
         memcpy(output, function[i], sizeof(output));
-
-        // getans for the number of correct ans
-        // numGate for the avg num of gates
-        // careGate for the avg num of gates (if it is correct)
-        // getfit for the avg fit
-        int getans = 0, numGate = 0, careGate = 0;
-        double getfit = 0;
-        int bestAns = 2000000; // Find the best ans in the 50Exp
-        for (int time = 0; time < test; time++)
+        for (int test_m = 10; test_m <= 20; test_m++)
         {
-            b = 0.0, w = 100, generation = 0;
-            last_ham = INT_MAX, adaptive_delta = delta;
-            init();
-            for (int i = 0; i < loop; i++)
+            m = test_m;
+            srand(rand_seed);
+            int total = 0;
+            int generation = 0;
+            // getans for the number of correct ans
+            // numGate for the avg num of gates
+            // careGate for the avg num of gates (if it is correct)
+            // getfit for the avg fit
+            int getans = 0, numGate = 0, careGate = 0;
+            double getfit = 0;
+            int bestAns = 2000000; // Find the best ans in the 50Exp
+            for (int time = 0; time < test; time++)
             {
-                changeBest = false;
-                ans();
-                repair();
-                oldfitness();
-                update();
-                if (changeBest)
+                b = 0.0, w = 100, generation = 0;
+                last_ham = INT_MAX, adaptive_delta = delta;
+                init();
+                for (int i = 0; i < loop; i++)
                 {
-                    generation = i;
+                    changeBest = false;
+                    ans();
+                    repair();
+                    fitness();
+                    update();
+                    if (changeBest)
+                    {
+                        generation = i;
+                    }
                 }
+
+                int ngate = gate(); // 做完一次實驗得到的gate數
+                // cout << "====== experiment" << time + 1 << " ======\n";
+                // cout << "number of gate = " << ngate << endl;
+                // cout << "best fitness = " << b << endl;
+                // cout << "best generation = " << generation << endl
+                //      << endl;
+
+                if (b >= 1) // care ans
+                {
+                    ngate <= bestAns ? bestAns = ngate : bestAns = bestAns;
+                    getans++;
+                    careGate += ngate;
+                }
+
+                getfit += b;
+                numGate += ngate;
             }
 
-            int ngate = gate(); // 做完一次實驗得到的gate數
-            // cout << "====== experiment" << time + 1 << " ======\n";
-            // cout << "number of gate = " << ngate << endl;
-            // cout << "best fitness = " << b << endl;
-            // cout << "best generation = " << generation << endl
-            //      << endl;
-
-            if (b >= 1) // care ans
-            {
-                ngate <= bestAns ? bestAns = ngate : bestAns = bestAns;
-                getans++;
-                careGate += ngate;
-            }
-
-            getfit += b;
-            numGate += ngate;
+            cout << getans << "\t" << getfit / (double)test << "\t" << (double)numGate / (double)test
+                 << "\t" << (double)careGate / (double)getans << "\t" << m << "\t"
+                 << bestAns << endl;
         }
-
-        cout << getans << "\t" << getfit / (double)test << "\t" << (double)numGate / (double)test
-             << "\t" << (double)careGate / (double)getans << "\t" << m << "\t"
-             << bestAns << endl;
     }
 
+    system("pause");
     return 0;
 }
 
@@ -247,36 +250,6 @@ void repair()
 }
 
 void fitness()
-{
-
-    for (int i = 0; i < population; i++)
-    {
-        int COP = cntCOP(i);
-        int gate = cntGate(i);
-
-        double fit1 = (double)COP / (double)pow(2, n);
-        double fit2 = 0.0;
-
-        /* count fit2 */
-        if (gate == 0) // denominator of a fraction is 0 → fit2 is infinite
-        {
-            fit2 = (double)m;
-        }
-        else
-        {
-            fit2 = (double)gate / (double)m;
-        }
-
-        fit[i] = fit1 / fit2;
-        // cout << "COP = " << COP << endl;
-        // cout << "fit1 = " << fit1 << endl;
-        // cout << "gate = " << gate << endl;
-        // cout << "fit2 = " << fit2 << endl;
-        // cout << "fit[i]" << fit[i] << endl << endl;
-    }
-}
-
-void oldfitness()
 {
     for (int i = 0; i < population; i++)
     {

@@ -70,7 +70,6 @@ void init();
 void ans();        // generate ans  5
 void repair();     // repair ans
 void fitness();    // A/B //FIXME //TODO
-void oldfitness(); // w1*fit1+w2*fit2 //FIXME //TODO
 void update();
 
 int cntCOP(int indexOfx);
@@ -111,7 +110,7 @@ int main()
                     changeBest = false;
                     ans();
                     repair();
-                    oldfitness();
+                    fitness();
                     update();
                     if (changeBest)
                     {
@@ -251,36 +250,6 @@ void repair()
 }
 
 void fitness()
-{
-
-    for (int i = 0; i < population; i++)
-    {
-        int COP = cntCOP(i);
-        int gate = cntGate(i);
-
-        double fit1 = (double)COP / (double)pow(2, n);
-        double fit2 = 0.0;
-
-        /* count fit2 */
-        if (gate == 0) // denominator of a fraction is 0 → fit2 is infinite
-        {
-            fit2 = (double)m;
-        }
-        else
-        {
-            fit2 = (double)gate / (double)m;
-        }
-
-        fit[i] = fit1 / fit2;
-        // cout << "COP = " << COP << endl;
-        // cout << "fit1 = " << fit1 << endl;
-        // cout << "gate = " << gate << endl;
-        // cout << "fit2 = " << fit2 << endl;
-        // cout << "fit[i]" << fit[i] << endl << endl;
-    }
-}
-
-void oldfitness()
 {
     for (int i = 0; i < population; i++)
     {

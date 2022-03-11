@@ -17,7 +17,7 @@ using namespace std;
 #define delta_change 0.001
 #define mMAX 30
 #define nMAX 5
-#define FunctionNum 21
+#define FunctionNum 20
 
 int m = 4, n = 3;
 

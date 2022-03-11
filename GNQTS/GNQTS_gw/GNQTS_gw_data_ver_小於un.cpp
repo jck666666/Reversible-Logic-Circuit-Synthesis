@@ -6,7 +6,7 @@
 
 /* 0 → 0-control, 1 → 1-control, 2 → copy bit, 3 → not */
 
-// time cost: 35 min.
+// time cost: 34 min.
 using namespace std;
 
 #define rand_seed 114
@@ -21,7 +21,7 @@ using namespace std;
 
 int m = 4, n = 3;
 
-int Form[] = {6, 6, 6, 10, 17, 10, 6, 8, 10, 10, 10, 10, 12, 15, 13, 16, 13, 10, 16, 16};
+int Form[] = {6, 6, 6, 10, 17, 10, 6, 8, 10, 10, 10, 10, 12, 15, 16, 16, 13, 10, 16, 16};
 int Forn[] = {3, 3, 3, 3, 4, 3, 4, 4, 3, 3, 3, 3, 4, 4, 4, 4, 4, 3, 4, 4};
 
 bool changeBest = false;
@@ -59,7 +59,7 @@ int function[mMAX][mMAX] = {
     {9, 7, 13, 10, 4, 2, 14, 3, 0, 12, 6, 8, 15, 11, 1, 5}, // 16
     {7, 5, 2, 4, 6, 1, 0, 3},                               // 17
     {6, 2, 14, 13, 3, 11, 10, 7, 0, 5, 8, 1, 15, 12, 4, 9}, // 18
-    {0, 1, 2, 3, 4, 5, 6, 8, 7, 9, 10, 11, 12, 13, 14, 15} // 19
+    {0, 1, 2, 3, 4, 5, 6, 8, 7, 9, 10, 11, 12, 13, 14, 15}, // 19
 };
 
 void init();
@@ -78,7 +78,7 @@ int gate();
 
 int main()
 {
-    for (int i = 18; i < FunctionNum; i++)
+    for (int i = 14; i < 15; i++)
     {
         srand(rand_seed);
         int total = 0;
@@ -134,7 +134,6 @@ int main()
              << "\t" << (double)careGate / (double)getans << "\t" << m << "\t"
              << bestAns << endl;
     }
-
     system("pause");
     return 0;
 }
@@ -359,16 +358,16 @@ void update()
     {
         for (int j = 0; j < m; j++)
         {
-            if (gb[i][j] != x[sw][i][j]) // have to update
+            if (gb[i][j] != gw[i][j]) // have to update
             {
                 Q[i][j][gb[i][j]] += delta;
-                Q[i][j][x[sw][i][j]] -= delta;
+                Q[i][j][gw[i][j]] -= delta;
             }
 
             /* ↓ repair ans ↓ */
-            if (Q[i][j][x[sw][i][j]] <= 0)
+            if (Q[i][j][gw[i][j]] <= 0)
             {
-                Q[i][j][x[sw][i][j]] = 0;
+                Q[i][j][gw[i][j]] = 0;
 
                 /* Q[i][j][gb[i][j]] = 1 - remain */
                 Q[i][j][gb[i][j]] = 1;
@@ -382,37 +381,15 @@ void update()
             }
             /* ↑ repair ans ↑ */
 
-            /* ↓ quantum NOT gate → the standard is gb < lw ↓ */
-            if (gb[i][j] != x[sw][i][j])
+            /* ↓ quantum NOT gate → the standard is 0.25 ↓ */
+            if (gb[i][j] != gw[i][j])
             {
-                if (Q[i][j][gb[i][j]] < Q[i][j][x[sw][i][j]]) // NOT
+                if (Q[i][j][gb[i][j]] < Q[i][j][gw[i][j]]) // NOT
                 {
-                    /* find max */
-                    int maxIndex = 0, minIndex = 0;
-                    double max = Q[i][j][0], min = Q[i][j][0];
-                    for (int k = 1; k < 4; k++)
-                    {
-                        if (Q[i][j][k] > max)
-                        {
-                            max = Q[i][j][k];
-                            maxIndex = k;
-                        }
-                        else if (Q[i][j][k] < min)
-                        {
-                            min = Q[i][j][k];
-                            minIndex = k;
-                        }
-                    }
-
-                    /* swap the Prob. of gb and max */
-                    double tmp = Q[i][j][maxIndex];
-                    Q[i][j][maxIndex] = Q[i][j][gb[i][j]];
+                    /* swap the Prob. of gb and gw */
+                    double tmp = Q[i][j][gw[i][j]];
+                    Q[i][j][gw[i][j]] = Q[i][j][gb[i][j]];
                     Q[i][j][gb[i][j]] = tmp;
-
-                    /* swap the Prob. of lw and min */
-                    tmp = Q[i][j][minIndex];
-                    Q[i][j][minIndex] = Q[i][j][x[sw][i][j]];
-                    Q[i][j][x[sw][i][j]] = tmp;
                 }
             }
             /* ↑ quantum NOT gate → the standard is 0.25 ↑ */

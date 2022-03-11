@@ -81,7 +81,7 @@ int gate();
 
 int main()
 {
-    for (int i = 12; i < FunctionNum; i++)
+    for (int i = 0; i < FunctionNum; i++)
     {
         cout << "======== function" << i << " =========\n";
         m = Form[i];

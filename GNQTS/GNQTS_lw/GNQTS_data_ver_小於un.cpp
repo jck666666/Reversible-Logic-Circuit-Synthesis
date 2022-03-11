@@ -6,7 +6,7 @@
 
 /* 0 → 0-control, 1 → 1-control, 2 → copy bit, 3 → not */
 
-// time cost: 38 min.
+//time cost: 34 min.
 using namespace std;
 
 #define rand_seed 114
@@ -21,7 +21,7 @@ using namespace std;
 
 int m = 4, n = 3;
 
-int Form[] = {6, 6, 6, 10, 17, 10, 6, 8, 10, 10, 10, 10, 12, 15, 13, 16, 13, 10, 16, 16};
+int Form[] = {6, 6, 6, 10, 17, 10, 6, 8, 10, 10, 10, 10, 12, 15, 16, 16, 13, 10, 16, 16};
 int Forn[] = {3, 3, 3, 3, 4, 3, 4, 4, 3, 3, 3, 3, 4, 4, 4, 4, 4, 3, 4, 4};
 
 bool changeBest = false;
@@ -78,7 +78,7 @@ int gate();
 
 int main()
 {
-    for (int i = 18; i < FunctionNum; i++)
+    for (int i = 14; i < 15; i++)
     {
         srand(rand_seed);
         int total = 0;
@@ -134,6 +134,7 @@ int main()
              << "\t" << (double)careGate / (double)getans << "\t" << m << "\t"
              << bestAns << endl;
     }
+
     system("pause");
     return 0;
 }
@@ -381,26 +382,14 @@ void update()
             }
             /* ↑ repair ans ↑ */
 
-            /* ↓ quantum NOT gate → the standard is gb < lw ↓ */
+            /* ↓ quantum NOT gate → the standard is 0.25 ↓ */
             if (gb[i][j] != x[sw][i][j])
             {
                 if (Q[i][j][gb[i][j]] < Q[i][j][x[sw][i][j]]) // NOT
                 {
-                    /* find max */
-                    int maxIndex = 0;
-                    double max = Q[i][j][0];
-                    for (int k = 1; k < 4; k++)
-                    {
-                        if (Q[i][j][k] > max)
-                        {
-                            max = Q[i][j][k];
-                            maxIndex = k;
-                        }
-                    }
-
-                    /* swap the Prob. of gb and max */
-                    double tmp = Q[i][j][maxIndex];
-                    Q[i][j][maxIndex] = Q[i][j][gb[i][j]];
+                    /* swap the Prob. of gb and gw */
+                    double tmp = Q[i][j][x[sw][i][j]];
+                    Q[i][j][x[sw][i][j]] = Q[i][j][gb[i][j]];
                     Q[i][j][gb[i][j]] = tmp;
                 }
             }

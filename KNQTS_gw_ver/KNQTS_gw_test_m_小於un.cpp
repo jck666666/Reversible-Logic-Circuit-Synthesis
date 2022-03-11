@@ -6,7 +6,7 @@
 
 /* 0 → 0-control, 1 → 1-control, 2 → copy bit, 3 → not */
 
-//time cost: 35 min.
+// time cost: 35 min.
 using namespace std;
 
 #define rand_seed 114
@@ -59,7 +59,7 @@ int function[mMAX][mMAX] = {
     {9, 7, 13, 10, 4, 2, 14, 3, 0, 12, 6, 8, 15, 11, 1, 5}, // 16
     {7, 5, 2, 4, 6, 1, 0, 3},                               // 17
     {6, 2, 14, 13, 3, 11, 10, 7, 0, 5, 8, 1, 15, 12, 4, 9}, // 18
-    {0, 1, 2, 3, 4, 5, 6, 8, 7, 9, 10, 11, 12, 13, 14, 15} // 19
+    {0, 1, 2, 3, 4, 5, 6, 8, 7, 9, 10, 11, 12, 13, 14, 15}  // 19
 };
 
 // about parameter of KNQTS
@@ -70,6 +70,7 @@ void init();
 void ans();        // generate ans  5
 void repair();     // repair ans
 void fitness();    // A/B //FIXME //TODO
+void oldfitness(); // w1*fit1+w2*fit2 //FIXME //TODO
 void update();
 
 int cntCOP(int indexOfx);
@@ -87,7 +88,7 @@ int main()
         m = Form[i];
         n = Forn[i];
         memcpy(output, function[i], sizeof(output));
-        for (int test_m = 10; test_m < 17; test_m++)
+        for (int test_m = 10; test_m <= 20; test_m++)
         {
             m = test_m;
             srand(rand_seed);
@@ -110,7 +111,7 @@ int main()
                     changeBest = false;
                     ans();
                     repair();
-                    fitness();
+                    oldfitness();
                     update();
                     if (changeBest)
                     {
@@ -251,6 +252,36 @@ void repair()
 
 void fitness()
 {
+
+    for (int i = 0; i < population; i++)
+    {
+        int COP = cntCOP(i);
+        int gate = cntGate(i);
+
+        double fit1 = (double)COP / (double)pow(2, n);
+        double fit2 = 0.0;
+
+        /* count fit2 */
+        if (gate == 0) // denominator of a fraction is 0 → fit2 is infinite
+        {
+            fit2 = (double)m;
+        }
+        else
+        {
+            fit2 = (double)gate / (double)m;
+        }
+
+        fit[i] = fit1 / fit2;
+        // cout << "COP = " << COP << endl;
+        // cout << "fit1 = " << fit1 << endl;
+        // cout << "gate = " << gate << endl;
+        // cout << "fit2 = " << fit2 << endl;
+        // cout << "fit[i]" << fit[i] << endl << endl;
+    }
+}
+
+void oldfitness()
+{
     for (int i = 0; i < population; i++)
     {
         double fit1 = 0.0, fit2 = 0.0, w1 = 1, w2 = 0.0;
@@ -307,7 +338,6 @@ void update()
     /* ↓ KNQTS ↓ */
 
     // hamming distance between sb and sw
-
     int ham = 0;
     for (int i = 0; i < n; i++)
     {
@@ -397,38 +427,15 @@ void update()
             }
             /* ↑ repair ans ↑ */
 
-            /* ↓ quantum NOT gate → the standard is gb < lw ↓ */
+            /* ↓ quantum NOT gate → the standard is 0.25 ↓ */
             if (gb[i][j] != gw[i][j])
             {
                 if (Q[i][j][gb[i][j]] < Q[i][j][gw[i][j]]) // NOT
                 {
-                    /* find max */
-                    int maxIndex = 0, minIndex = 0;
-                    double max = Q[i][j][0], min = Q[i][j][0];
-                    for (int k = 1; k < 4; k++)
-                    {
-                        if (Q[i][j][k] > max)
-                        {
-                            max = Q[i][j][k];
-                            maxIndex = k;
-                        }
-                        else if (Q[i][j][k] < min)
-                        {
-                            min = Q[i][j][k];
-                            minIndex = k;
-                        }
-
-                    }
-
-                    /* swap the Prob. of gb and max */
-                    double tmp = Q[i][j][maxIndex];
-                    Q[i][j][maxIndex] = Q[i][j][gb[i][j]];
+                    /* swap the Prob. of gb and gw */
+                    double tmp = Q[i][j][gw[i][j]];
+                    Q[i][j][gw[i][j]] = Q[i][j][gb[i][j]];
                     Q[i][j][gb[i][j]] = tmp;
-
-                    /* swap the Prob. of lw and min */
-                    tmp = Q[i][j][minIndex];
-                    Q[i][j][minIndex] = Q[i][j][gw[i][j]];
-                    Q[i][j][gw[i][j]] = tmp;                   
                 }
             }
             /* ↑ quantum NOT gate → the standard is 0.25 ↑ */

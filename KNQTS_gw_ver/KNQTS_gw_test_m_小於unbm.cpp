@@ -88,7 +88,7 @@ int main()
         m = Form[i];
         n = Forn[i];
         memcpy(output, function[i], sizeof(output));
-        for (int test_m = 10; test_m < 17; test_m++)
+        for (int test_m = 10; test_m <= 20; test_m++)
         {
             m = test_m;
             srand(rand_seed);

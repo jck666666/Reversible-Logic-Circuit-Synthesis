@@ -4,6 +4,7 @@
 #include <cmath>
 #include <climits>
 
+//0.25unmm
 /* 0 → 0-control, 1 → 1-control, 2 → copy bit, 3 → not */
 
 //time cost: 35 min.
@@ -81,7 +82,7 @@ int gate();
 
 int main()
 {
-    for (int i = 4; i < 5; i++)
+    for (int i = 14; i < 15; i++)
     {
         cout << "======== function" << i << " =========\n";
         m = Form[i];
@@ -400,7 +401,7 @@ void update()
             /* ↓ quantum NOT gate → the standard is gb < lw ↓ */
             if (gb[i][j] != gw[i][j])
             {
-                if (Q[i][j][gb[i][j]] < Q[i][j][gw[i][j]]) // NOT
+                if (Q[i][j][gb[i][j]] < 0.25) // NOT
                 {
                     /* find max */
                     int maxIndex = 0, minIndex = 0;

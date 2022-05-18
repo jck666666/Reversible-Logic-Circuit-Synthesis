@@ -1,5 +1,10 @@
 # Reversible-Logic-Circuit-Synthesis
 
+## KNQTS_gw_0.25unmm_test_for_new_function.cpp
+* 最終版，一次測很多function
+
+
+## 不用看
 * KNQTS_data_ver_小於unmm
   * 還沒有確定mm有沒有不小心寫錯
   * 還沒測

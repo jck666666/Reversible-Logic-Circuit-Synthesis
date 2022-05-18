@@ -15,9 +15,9 @@ using namespace std;
 #define test 50
 #define delta 0.002
 #define delta_change 0.001
-#define mMAX 30
-#define nMAX 5
-#define FunctionNum 10
+#define mMAX 200
+#define nMAX 10
+#define FunctionNum 1
 
 int m = 4, n = 3;
 
@@ -37,7 +37,7 @@ double b = 0.0, w = 100;
 int gb[nMAX][mMAX] = {0}, gw[nMAX][mMAX] = {0};
 
 // FIXME
-int output[mMAX] = {6, 4, 11, 0, 9, 8, 12, 2, 15, 5, 3, 7, 10, 13, 14, 1}; // int output[power(2,n)]
+int output[mMAX] = {0, 32, 1, 48, 2, 17, 33, 56, 4, 18, 34, 25, 3, 41, 49, 60, 8, 20, 36, 26, 5, 42, 50, 29, 6, 11, 19, 45, 35, 53, 57, 62, 16, 24, 40, 28, 9, 44, 52, 30, 10, 13, 21, 46, 37, 54, 58, 31, 12, 14, 22, 15, 38, 23, 27, 47, 7, 39, 43, 55, 51, 59, 61, 63}; // int output[power(2,n)]
 
 int function[mMAX][mMAX] = {
     {4, 5, 6, 1, 0, 7, 2, 3},                               // 0
@@ -77,9 +77,12 @@ int main()
         int total = 0;
         int generation = 0;
 
-        m = Form[i];
+        // m = Form[i];
         n = Forn[i];
-        memcpy(output, function[i], sizeof(output));
+        // memcpy(output, function[i], sizeof(output));
+
+        m = 50;
+        n = 6;
 
         // getans for the number of correct ans
         // numGate for the avg num of gates
@@ -107,11 +110,11 @@ int main()
             }
 
             int ngate = gate(); // 做完一次實驗得到的gate數
-            // cout << "====== experiment" << time + 1 << " ======\n";
-            // cout << "number of gate = " << ngate << endl;
-            // cout << "best fitness = " << b << endl;
-            // cout << "best generation = " << generation << endl
-            //      << endl;
+            cout << "====== experiment" << time + 1 << " ======\n";
+            cout << "number of gate = " << ngate << endl;
+            cout << "best fitness = " << b << endl;
+            cout << "best generation = " << generation << endl
+                 << endl;
 
             if (b >= 1) // care ans
             {
@@ -127,6 +130,19 @@ int main()
         cout << getans << "\t" << getfit / (double)test << "\t" << (double)numGate / (double)test
              << "\t" << (double)careGate / (double)getans << "\t" << m << "\t"
              << bestAns << endl;
+
+        for (int i = 0; i < m; i++)
+        {
+            for (int j = 0; j < n; j++)
+            {
+                if (gb[j][i] == 2)
+                    cout << 3 << " ";
+                else if (gb[j][i] == 3)
+                    cout << 2 << " ";
+                else
+                    cout << gb[j][i] << " ";
+            }
+        }
     }
 
     system("pause");

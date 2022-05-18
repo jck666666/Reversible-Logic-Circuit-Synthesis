@@ -11,15 +11,15 @@ using namespace std;
 #define wire 2
 
 // tune--------
-#define n 4
-#define gate 3 // m
+#define n 3
+#define gate 5 // m
 // tune--------
 
 double W1 = 1, W2 = 0;
 // const int func[32] = {1, 0, 3, 2, 5, 7, 4, 6};//6
 // const int func[32] = {7,0,1,2,3,4,5,6};//6
 // const int func[32] = {0,1,2,3,4,6,5,7};//6
-// const int func[32] = {0, 1, 2, 4, 3, 5, 6, 7}; // 10
+ const int func[32] = {0, 1, 2, 4, 3, 5, 6, 7}; // 10
 // const int func[32] = {1,2,3,4,5,6,7,0};//10
 // const int func[32] = {3,6,2,5,7,1,0,4};//10
 // const int func[32] = {1,2,7,5,6,3,0,4};//10
@@ -29,7 +29,7 @@ double W1 = 1, W2 = 0;
 // const int func[32] = {0, 2, 1, 4, 7, 5, 6, 3};//10+
 
 // const int func[32] = {0, 1, 14, 15, 4, 5, 10, 11, 7, 9, 6, 8, 12, 13, 2, 3};//17
-const int func[32] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0}; // 6
+//const int func[32] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0}; // 6
 // const int func[32] = {0, 7, 6, 9, 4, 11, 10, 13, 8, 15, 14, 1, 12, 3, 2, 5};//8
 // const int func[32] = {6, 3, 14, 13, 2, 11, 7, 10, 0, 5, 8, 1, 12, 15, 9, 4};//13
 // const int func[32] = {0, 9, 10, 5, 4, 15, 14, 8, 11, 2, 6, 3, 12, 7, 1, 13};//17
@@ -189,8 +189,8 @@ int main()
             }
 
             fitness();
-            cout << fit << endl;
-            printarr();
+        //    cout << fit << endl;
+         //   printarr();
             // output2();
             if (fit >= 1)
             {

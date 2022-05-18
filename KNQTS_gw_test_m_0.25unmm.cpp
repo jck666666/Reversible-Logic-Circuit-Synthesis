@@ -1,12 +1,11 @@
 #include <iostream>
-#include <string>
 #include <stdlib.h>
 #include <cmath>
 #include <climits>
 
 /* 0 → 0-control, 1 → 1-control, 2 → copy bit, 3 → not */
 
-//time cost: 35 min.
+// time cost: 35 min.
 using namespace std;
 
 #define rand_seed 114
@@ -15,14 +14,11 @@ using namespace std;
 #define test 50
 #define delta 0.002
 #define delta_change 0.001
-#define mMAX 30
-#define nMAX 5
-#define FunctionNum 10
+#define mMAX 200
+#define nMAX 10
+#define FunctionNum 1
 
-int m = 4, n = 3;
-
-int Form[] = {16, 10, 16, 10, 10, 16, 16, 10, 20, 30};
-int Forn[] = {3, 3, 3, 3, 3, 4, 4, 4, 4, 4};
+int m = 4, n = 6;
 
 bool changeBest = false;
 /* about Q matrix */
@@ -37,29 +33,16 @@ double b = 0.0, w = 100;
 int gb[nMAX][mMAX] = {0}, gw[nMAX][mMAX] = {0};
 
 // FIXME
-int output[mMAX] = {6, 4, 11, 0, 9, 8, 12, 2, 15, 5, 3, 7, 10, 13, 14, 1}; // int output[power(2,n)]
-
-int function[mMAX][mMAX] = {
-    {4, 5, 6, 1, 0, 7, 2, 3},                               // 0
-    {0, 2, 1, 4, 7, 5, 6, 3},                               // 1
-    {0, 6, 2, 3, 4, 5, 1, 7},                               // 2
-    {7, 0, 1, 3, 4, 2, 6, 5},                               // 3
-    {0, 3, 2, 5, 4, 7, 6, 1},                               // 4
-    {0, 8, 1, 12, 2, 5, 9, 14, 4, 6, 10, 7, 3, 11, 13, 15}, // 5
-    {15, 0, 10, 4, 3, 11, 1, 7, 8, 5, 6, 2, 12, 9, 14, 13}, // 6
-    {0, 5, 6, 11, 4, 9, 10, 15, 8, 12, 13, 14, 3, 7, 1, 2}, // 7
-    {0, 2, 14, 5, 12, 1, 11, 7, 4, 6, 13, 3, 10, 9, 8, 15}, // 8
-    {1, 2, 4, 8, 0, 3, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15}, // 9
-};
+int output[mMAX] = {0, 32, 1, 48, 2, 17, 33, 56, 4, 18, 34, 25, 3, 41, 49, 60, 8, 20, 36, 26, 5, 42, 50, 29, 6, 11, 19, 45, 35, 53, 57, 62, 16, 24, 40, 28, 9, 44, 52, 30, 10, 13, 21, 46, 37, 54, 58, 31, 12, 14, 22, 15, 38, 23, 27, 47, 7, 39, 43, 55, 51, 59, 61, 63}; // int output[power(2,n)]
 
 // about parameter of KNQTS
 int last_ham = INT_MAX;
 double adaptive_delta = delta;
 
 void init();
-void ans();        // generate ans  5
-void repair();     // repair ans
-void fitness();    // A/B //FIXME //TODO
+void ans();     // generate ans  5
+void repair();  // repair ans
+void fitness(); // A/B //FIXME //TODO
 void update();
 
 int cntCOP(int indexOfx);
@@ -71,64 +54,71 @@ int gate();
 
 int main()
 {
-    for (int i = 1; i < 2; i++)
+    for (int test_m = 10; test_m <= 70; test_m++)
     {
-        cout << "======== function" << i << " =========\n";
-        m = Form[i];
-        n = Forn[i];
-        memcpy(output, function[i], sizeof(output));
-        for (int test_m = 3; test_m <= 6; test_m++)
+        m = test_m;
+        srand(rand_seed);
+        int total = 0;
+        int generation = 0;
+
+        // getans for the number of correct ans
+        // numGate for the avg num of gates
+        // careGate for the avg num of gates (if it is correct)
+        // getfit for the avg fit
+        int getans = 0, numGate = 0, careGate = 0;
+        double getfit = 0;
+        int bestAns = 2000000; // Find the best ans in the 50Exp
+        for (int time = 0; time < test; time++)
         {
-            m = test_m;
-            srand(rand_seed);
-            int total = 0;
-            int generation = 0;
-            // getans for the number of correct ans
-            // numGate for the avg num of gates
-            // careGate for the avg num of gates (if it is correct)
-            // getfit for the avg fit
-            int getans = 0, numGate = 0, careGate = 0;
-            double getfit = 0;
-            int bestAns = 2000000; // Find the best ans in the 50Exp
-            for (int time = 0; time < test; time++)
+            b = 0.0, w = 100, generation = 0;
+            last_ham = INT_MAX, adaptive_delta = delta;
+            init();
+            for (int i = 0; i < loop; i++)
             {
-                b = 0.0, w = 100, generation = 0;
-                last_ham = INT_MAX, adaptive_delta = delta;
-                init();
-                for (int i = 0; i < loop; i++)
+                changeBest = false;
+                ans();
+                repair();
+                fitness();
+                update();
+                if (changeBest)
                 {
-                    changeBest = false;
-                    ans();
-                    repair();
-                    fitness();
-                    update();
-                    if (changeBest)
-                    {
-                        generation = i;
-                    }
+                    generation = i;
                 }
-
-                int ngate = gate(); // 做完一次實驗得到的gate數
-                // cout << "====== experiment" << time + 1 << " ======\n";
-                // cout << "number of gate = " << ngate << endl;
-                // cout << "best fitness = " << b << endl;
-                // cout << "best generation = " << generation << endl
-                //      << endl;
-
-                if (b >= 1) // care ans
-                {
-                    ngate <= bestAns ? bestAns = ngate : bestAns = bestAns;
-                    getans++;
-                    careGate += ngate;
-                }
-
-                getfit += b;
-                numGate += ngate;
             }
 
-            cout << getans << "\t" << getfit / (double)test << "\t" << (double)numGate / (double)test
-                 << "\t" << (double)careGate / (double)getans << "\t" << m << "\t"
-                 << bestAns << endl;
+            int ngate = gate(); // 做完一次實驗得到的gate數
+            cout << "====== experiment" << time + 1 << " ======\n";
+            cout << "number of gate = " << ngate << endl;
+            cout << "best fitness = " << b << endl;
+            cout << "best generation = " << generation << endl
+                 << endl;
+
+            if (b >= 1) // care ans
+            {
+                ngate <= bestAns ? bestAns = ngate : bestAns = bestAns;
+                getans++;
+                careGate += ngate;
+            }
+
+            getfit += b;
+            numGate += ngate;
+        }
+
+        cout << getans << "\t" << getfit / (double)test << "\t" << (double)numGate / (double)test
+             << "\t" << (double)careGate / (double)getans << "\t" << m << "\t"
+             << bestAns << endl;
+
+        for (int i = 0; i < m; i++)
+        {
+            for (int j = 0; j < n; j++)
+            {
+                if (gb[j][i] == 2)
+                    cout << 3 << " ";
+                else if (gb[j][i] == 3)
+                    cout << 2 << " ";
+                else
+                    cout << gb[j][i] << " ";
+            }
         }
     }
 
@@ -390,7 +380,7 @@ void update()
             /* ↓ quantum NOT gate → the standard is gb < lw ↓ */
             if (gb[i][j] != gw[i][j])
             {
-                if (Q[i][j][gb[i][j]] < Q[i][j][gw[i][j]]) // NOT
+                if (Q[i][j][gb[i][j]] < 0.25) // NOT
                 {
                     /* find max */
                     int maxIndex = 0, minIndex = 0;
@@ -407,7 +397,6 @@ void update()
                             min = Q[i][j][k];
                             minIndex = k;
                         }
-
                     }
 
                     /* swap the Prob. of gb and max */
@@ -418,7 +407,7 @@ void update()
                     /* swap the Prob. of lw and min */
                     tmp = Q[i][j][minIndex];
                     Q[i][j][minIndex] = Q[i][j][gw[i][j]];
-                    Q[i][j][gw[i][j]] = tmp;                   
+                    Q[i][j][gw[i][j]] = tmp;
                 }
             }
             /* ↑ quantum NOT gate → the standard is 0.25 ↑ */

@@ -54,7 +54,7 @@ int gate();
 
 int main()
 {
-    for (int test_m = 63; test_m <= 120; test_m++)
+    for (int test_m = 100; test_m <= 150; test_m++)
     {
         m = test_m;
         srand(rand_seed);
